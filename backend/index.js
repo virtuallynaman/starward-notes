@@ -74,13 +74,13 @@ app.get("/api/notes/:id", async (req, res) => {
 // Post a new note
 app.post("/api/notes", async (req, res) => {
     const { title, body } = req.body;
-    if (!title || !body) {
-        return res.status(400).json({ message: "Title and body are required" });
+    if (!title && !body) {
+        return res.status(400).json({ message: "Title or body are required" });
     }
 
     try {
-        await db.query("INSERT INTO notes(title, body) VALUES($1, $2);", [title, body]);
-        res.status(201).json({ message: "Note created successfully" });
+        const newNote = await db.query("INSERT INTO notes(title, body) VALUES($1, $2) RETURNING *;", [title, body]);
+        res.status(201).json(newNote.rows[0]);
     } catch (err) {
         console.error("Error saving note", err);
         res.status(500).json({ message: "Internal Server Error" });
