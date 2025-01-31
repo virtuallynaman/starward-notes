@@ -4,6 +4,7 @@ import HomePage from "./HomePage";
 import Footer from "./Footer";
 import NotesProvider from "./NotesProvider";
 import NoteDetails from "./NoteDetails";
+import NewNote from "./NewNote";
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route index element={<HomePage />} />
             <Route path="/note/:id" element={<NoteDetails />} />
+            <Route path="/new" element={<NewNote />} />
           </Routes>
           <Footer />
         </div>

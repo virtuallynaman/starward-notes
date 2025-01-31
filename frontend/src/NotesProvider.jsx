@@ -11,8 +11,6 @@ function NotesProvider({ children }) {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/notes`);
                 setNotes(response.data);
-                // console.log(`${import.meta.env.VITE_BASE_URL}/api/notes`);
-                // console.log("hello")
             } catch (err) {
                 console.error("Error fetching notes:", err);
             }
