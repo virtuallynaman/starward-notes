@@ -1,26 +1,44 @@
-import { NavLink } from "react-router-dom";
+import { MdPushPin, MdOutlinePushPin } from "react-icons/md";
+import { NotesContext } from "./NotesContext";
+import { useContext } from "react";
+import axios from "axios";
 
-function NotePreview({ notes, viewStyle }) {
-    let titleLength = 17;
-    let bodyLength = 100;
+function NotePreview({ note, viewStyle, openModal }) {
+    const { notes, setNotes, noteType } = useContext(NotesContext);
 
-    if (viewStyle[0] !== "grid-view") {
-        titleLength = 50;
-        bodyLength = 200;
+    const updateNoteProperties = async (previousProperty, updatedProperty) => {
+        setNotes(prevNotes =>
+            prevNotes.map(n =>
+                n.id === note.id ? { ...n, ...updatedProperty } : n
+            )
+        );
+
+        try {
+            await axios.patch(`${import.meta.env.VITE_BASE_URL}/api/notes/${note.id}/properties`, { ...updatedProperty });
+            console.log("updating property:", updatedProperty);
+        } catch (err) {
+            console.error("Error updating note property", err);
+
+            setNotes(prevNotes =>
+                prevNotes.map(n =>
+                    n.id === note.id ? { ...n, ...previousProperty } : n
+                )
+            );
+        }
     }
-
     return (
-        <div className="note-preview">
-            {console.log(viewStyle)}
-            {notes.map((note) => (
-                <div className={viewStyle} key={note.id}>
-                    <NavLink to={`/note/${note.id}`} key={note.id}>
-                        <h2 className="title">{note.title.trim() !== "" ? note.title.slice(0, titleLength) + "..." : "Untitled"}</h2>
-                        <p className="body">{note.body.trim() !== "" ? note.body.slice(0, bodyLength) + "..." : note.body.slice(0, bodyLength)}</p>
-                    </NavLink>
-                </div>
-            ))}
-        </div >
+        <div className={viewStyle}>
+            <div className={`${viewStyle}-content`} onClick={() => openModal(note)}>
+                {note.title.trim() !== "" ? <p className="title">{note.title}</p> : " "}
+                <p className="body">{note.body}</p>
+            </div>
+            { noteType === "all" && <span className="home-pin-btn" onClick={() => {
+                updateNoteProperties(note.pinned, { pinned: !note.pinned });
+                note.pinned = !note.pinned;
+            }}>
+                {note.pinned ? <MdPushPin /> : <MdOutlinePushPin />}
+            </span>}
+        </div>
     )
 }
 export default NotePreview;
