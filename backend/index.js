@@ -29,9 +29,21 @@ db.connect()
     .then(console.log("Connected to the database"))
     .catch((err) => console.error("Database connection error", err));
 
-// Get all the notes
+// Get all the notes except archived and trashed notes
 async function getAllNotes(sortOrder) {
-    const result = await db.query(`SELECT * FROM notes ORDER BY date ${sortOrder};`);
+    const result = await db.query(`SELECT * FROM notes WHERE archived = 'false' AND trashed = 'false' ORDER BY date ${sortOrder};`);
+    return result.rows;
+}
+
+// Get all the archived notes
+async function getArchivedNotes(sortOrder) {
+    const result = await db.query(`SELECT * FROM notes WHERE archived = 'true' ORDER BY date ${sortOrder};`);
+    return result.rows;
+}
+
+// Get all the trashed notes
+async function getTrashedNotes(sortOrder) {
+    const result = await db.query(`SELECT * FROM notes WHERE trashed = 'true' ORDER BY date ${sortOrder};`);
     return result.rows;
 }
 
@@ -43,9 +55,18 @@ async function getNotesByID(id) {
 
 // Get all the notes route
 app.get("/api/notes", async (req, res) => {
-    const sortOrder = req.query.sortOrder === "ASC" ? "ASC" : "DESC";
+    const { noteType, sortOrder } = req.query;
+
+    const getNotesFunctionsMap = {
+        all: getAllNotes,
+        archived: getArchivedNotes,
+        trashed: getTrashedNotes,
+    }
+
+    const getNotesFunction = getNotesFunctionsMap[noteType] || getAllNotes;
+
     try {
-        const notes = await getAllNotes(sortOrder);
+        const notes = await getNotesFunction(sortOrder);
         res.status(200).json(notes);
     } catch (err) {
         console.error("Error fetching notes:", err);
@@ -74,9 +95,6 @@ app.get("/api/notes/:id", async (req, res) => {
 // Post a new note
 app.post("/api/notes", async (req, res) => {
     const { title, body } = req.body;
-    if (!title && !body) {
-        return res.status(400).json({ message: "Title or body are required" });
-    }
 
     try {
         const newNote = await db.query("INSERT INTO notes(title, body) VALUES($1, $2) RETURNING *;", [title, body]);
@@ -87,17 +105,13 @@ app.post("/api/notes", async (req, res) => {
     }
 });
 
-// Update a note
-app.patch("/api/notes/:id", async (req, res) => {
+// Update note content
+app.patch("/api/notes/:id/content", async (req, res) => {
     const id = parseInt(req.params.id);
     const { title, body } = req.body;
 
     if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid note ID" });
-    }
-
-    if (!title || !body) {
-        return res.status(400).json({ message: "At least one field (title or body) must be provided to update" });
     }
 
     try {
@@ -106,13 +120,32 @@ app.patch("/api/notes/:id", async (req, res) => {
             return res.status(404).json({ message: "Note not found" });
         }
 
-        await db.query("UPDATE notes SET title = COALESCE($1, title), body = COALESCE($2, body) WHERE id = $3;", [title, body, id]);
+        await db.query("UPDATE notes SET title = COALESCE($1, title), body = COALESCE($2, body), date = NOW() WHERE id = $3;", [title, body, id]);
         res.status(200).json({ message: "Note updated successfully" });
     } catch (err) {
         console.error("Error updating note", err);
         res.status(500).json({ message: "Internal Server Error" });
     }
 });
+
+// Update note properties 
+app.patch("/api/notes/:id/properties", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { pinned, archived, color, trashed } = req.body;
+
+    try {
+        const note = await getNotesByID(id);
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+
+        await db.query("UPDATE notes SET pinned = COALESCE($1, pinned), archived = COALESCE($2, archived), color = COALESCE($3, color), trashed = COALESCE($4, trashed) WHERE id = $5;", [pinned, archived, color, trashed, id])
+        res.status(200).json({ message: "Note updated successfully" });
+    } catch (err) {
+        console.error("Error updating note properties", err);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 // Delete a note
 app.delete("/api/notes/:id", async (req, res) => {
