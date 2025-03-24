@@ -1,27 +1,31 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import NavBar from "./NavBar";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
+import { NotesProvider } from "./NotesProvider";
+import SignUp from "./SignUp";
+import Login from "./Login";
 import HomePage from "./HomePage";
-import Footer from "./Footer";
-import NotesProvider from "./NotesProvider";
-import NoteDetails from "./NoteDetails";
-import NewNote from "./NewNote";
 
 function App() {
+  const { user } = useAuth();
 
   return (
-    <NotesProvider>
-      <BrowserRouter>
-        <div className="App">
-          <NavBar />
-          <Routes>
-            <Route index element={<HomePage />} />
-            <Route path="/note/:id" element={<NoteDetails />} />
-            <Route path="/new" element={<NewNote />} />
-          </Routes>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </NotesProvider >
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={user ? <NotesProvider><HomePage /></NotesProvider> : <Navigate to={"/login"} />}
+        />
+        <Route
+          path="/signup"
+          exact
+          element={!user ? <SignUp /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/login"
+          element={!user ? <Login /> : <Navigate to={"/"} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
