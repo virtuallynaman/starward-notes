@@ -32,6 +32,20 @@ function HomePage() {
         setSelectedNote(null);
     }
 
+    const getEmptyMessage = () => {
+        switch (noteType) {
+            case "all":
+                return "Looks empty here! Create your first note to get started.";
+            case "archived":
+                return "No archived notes. Archive notes to keep them out of sight without deleting them.";
+            case "trashed":
+                return "No notes in trash. Deleted notes will appear here until permanently removed.";
+        
+            default:
+                return "";
+        }
+    }
+
     return (
         <>
             <NavBar />
@@ -49,6 +63,12 @@ function HomePage() {
                                     <button className="newNoteBtn" onClick={() => openModal({ id: null, title: null, body: null, pinned: false, archived: false, color: "default_bg", trashed: false, date: "" })}>
                                         <MdAdd className="newNoteIcon" />
                                     </button>
+                                )}
+
+                                {(pinnedNotes.length < 1 && otherNotes.length < 1) && ( 
+                                    <div className="empty-notes-container">
+                                        <span>{getEmptyMessage()}</span>
+                                    </div>
                                 )}
 
                                 {pinnedNotes.length > 0 ? (
