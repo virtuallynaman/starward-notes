@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 function NavBar() {
     const { logout } = useAuth();
-    const { viewStyle, setViewStyle, sortOrder, setSortOrder, searchTerm, setSearchTerm, noteType, setNoteType, setNotes } = useNotes();
+    const { viewStyle, setViewStyle, sortOrder, setSortOrder, searchTerm, setSearchTerm, noteType, setNoteType, setNotes, noInternet, setWarnNoInternet } = useNotes();
     const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     const sortDropdownRef = useRef(null);
     const profileDropdownRef = useRef(null);
@@ -26,6 +26,16 @@ function NavBar() {
     // Close search
     const handleClear = () => {
         setSearchTerm("");
+    }
+
+    // Sidebar navigation
+    const handleNavigation = (type) => {
+        if (type !== noteType) {
+            setNoteType(type);
+            setSearchTerm("");
+            setNotes([]);
+        }
+        setIsMenuOpen(false);
     }
 
     // ====================
@@ -88,31 +98,16 @@ function NavBar() {
                     <h2 className="logo">{noteType === "all" ? "HyperBloom" : (noteType === "archived" ? "Archive" : "Trash")}</h2>
                 </div>
 
-                <div
-                    className={`sidebar-item ${noteType === "all" && "active"}`}
-                    onClick={() => {
-                        setNoteType("all");
-                        setNotes([]);
-                        setIsMenuOpen(false);
-                    }}>
+                <div className={`sidebar-item ${noteType === "all" && "active"}`}
+                    onClick={() => handleNavigation("all")}>
                     {noteType === "all" ? <MdHome className="sidebar-icon" /> : <MdOutlineHome className="sidebar-icon" />}Notes
                 </div>
-                <div
-                    className={`sidebar-item ${noteType === "archived" && "active"}`}
-                    onClick={() => {
-                        setNoteType("archived");
-                        setNotes([]);
-                        setIsMenuOpen(false);
-                    }}>
+                <div className={`sidebar-item ${noteType === "archived" && "active"}`}
+                    onClick={() => handleNavigation("archived")}>
                     {noteType === "archived" ? <MdArchive className="sidebar-icon" /> : <MdOutlineArchive className="sidebar-icon" />}Archive
                 </div>
-                <div
-                    className={`sidebar-item ${noteType === "trashed" && "active"}`}
-                    onClick={() => {
-                        setNoteType("trashed");
-                        setNotes([]);
-                        setIsMenuOpen(false);
-                    }}>
+                <div className={`sidebar-item ${noteType === "trashed" && "active"}`}
+                    onClick={() => handleNavigation("trashed")}>
                     {noteType === "trashed" ? <MdDelete className="sidebar-icon" /> : <MdDeleteOutline className="sidebar-icon" />}Trash
                 </div>
                 <a className="github-link" href="https://github.com/virtuallynaman/HyperBloom" target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} ><FaGithub className="sidebar-icon" /> Github Repo</a>

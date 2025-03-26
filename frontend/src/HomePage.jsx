@@ -9,18 +9,9 @@ import NavBar from "./NavBar";
 Modal.setAppElement("#root");
 
 function HomePage() {
-    const { notes, viewStyle, noteType, searchTerm, filteredNotes, isLoading } = useNotes();
+    const { pinnedNotes, otherNotes, viewStyle, noteType, searchTerm, filteredNotes, isLoading, warnNoInternet } = useNotes();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedNote, setSelectedNote] = useState(null);
-
-    let pinnedNotes = [];
-    let otherNotes = notes;
-
-    if (noteType === "all") {
-        pinnedNotes = notes.filter(note => note.pinned);
-    }
-
-    pinnedNotes.length > 0 && (otherNotes = notes.filter(note => !note.pinned));
 
     const openModal = (note) => {
         setSelectedNote(note);
@@ -33,6 +24,8 @@ function HomePage() {
     }
 
     const getEmptyMessage = () => {
+        if (warnNoInternet) return "No internet connection. Try again later.";
+
         switch (noteType) {
             case "all":
                 return "Looks empty here! Create your first note to get started.";
@@ -40,7 +33,6 @@ function HomePage() {
                 return "No archived notes. Archive notes to keep them out of sight without deleting them.";
             case "trashed":
                 return "No notes in trash. Deleted notes will appear here until permanently removed.";
-        
             default:
                 return "";
         }
@@ -59,13 +51,13 @@ function HomePage() {
                     <>
                         {!searchTerm ?
                             <>
-                                {noteType === "all" && (
-                                    <button className="newNoteBtn" onClick={() => openModal({ id: null, title: null, body: null, pinned: false, archived: false, color: "default_bg", trashed: false, date: "" })}>
+                                {!warnNoInternet && noteType === "all" && (
+                                    <button className="newNoteBtn" onClick={() => openModal({ id: null, title: null, body: null, pinned: false, archived: false, color: null, trashed: false, date: "" })}>
                                         <MdAdd className="newNoteIcon" />
                                     </button>
                                 )}
 
-                                {(pinnedNotes.length < 1 && otherNotes.length < 1) && ( 
+                                {(pinnedNotes.length < 1 && otherNotes.length < 1) && (
                                     <div className="empty-notes-container">
                                         <span>{getEmptyMessage()}</span>
                                     </div>
@@ -117,10 +109,14 @@ function HomePage() {
                                     </div>
                                 ) : (
                                     <div className="empty-notes-container">
-                                        {pinnedNotes.length > 0 || otherNotes.length > 0 ?
-                                            <span>No matching notes found. Try a different search term!</span>
-                                            :
-                                            <span>You don’t have any notes yet, so there’s nothing to search. Create your first note to get started!</span>
+                                        {warnNoInternet ?
+                                            <span>No internet connection. Try again later.</span>
+                                            : (
+                                                (pinnedNotes.length > 0 || otherNotes.length > 0) ?
+                                                    <span>No matching notes found. Try a different search term!</span>
+                                                    :
+                                                    <span>You don’t have any notes yet, so there’s nothing to search. Create your first note to get started!</span>
+                                            )
                                         }
                                     </div>
                                 )}

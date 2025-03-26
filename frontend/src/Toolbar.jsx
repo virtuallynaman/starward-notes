@@ -1,41 +1,67 @@
-import { MdPushPin, MdOutlinePushPin, MdOutlineArchive, MdOutlineUnarchive, MdOutlinePalette, MdOutlineDelete, MdOutlineDeleteForever, MdOutlineRestore, MdOutlineRestorePage, MdOutlineRestoreFromTrash, MdRestoreFromTrash, MdDeleteForever, MdDeleteSweep, MdDelete } from "react-icons/md";
+import { useState } from "react";
+import { MdPushPin, MdOutlinePushPin, MdOutlineArchive, MdOutlineUnarchive, MdOutlinePalette, MdOutlineRestore, MdDeleteForever, MdDelete, MdOutlineFormatColorReset } from "react-icons/md";
 
-function Toolbar({ note, noteId, updateNoteProperties, deleteForever }) {
-    const colors = ["#ffadad", "#ffd6a5", "#fdffb6", "#caffbf", "#9bf6ff", "#a0c4ff"];
+function Toolbar({ note, updateNoteProperties, deleteForever, setBgColor }) {
+    const colors = ["#2D2E30", "#3B3F52", "#4E4C67", "#5B5E7A", "#27374D", "#1E2A38", "#3D3B40", "#524A4E"];
+    const [showColorPicker, setShowColorPicker] = useState(false);
+
+    const handlePicker = () => {
+        setShowColorPicker(!showColorPicker);
+    }
 
     return (
         <div className="toolbar">
-            {!note.archived && !note.trashed && (<button onClick={() => {
-                updateNoteProperties({ pinned: note.pinned }, { pinned: !note.pinned });
-                note.pinned = !note.pinned;
-            }}>
-                {note.pinned ? <MdPushPin className="toolbar-icon" /> : <MdOutlinePushPin className="toolbar-icon" />}
-                <span className="tool-name">{note.pinned ? "Unpin" : "Pin"}</span>
-            </button>)}
-
-            {!note.trashed && (<button onClick={() => {
-                updateNoteProperties({ archived: note.archived }, { archived: !note.archived });
-                note.archived = !note.archived;
-            }}>
-                {note.archived ? <MdOutlineUnarchive className="toolbar-icon" /> : <MdOutlineArchive className="toolbar-icon" />}
-                <span className="tool-name">{note.archived ? "Unarchive" : "Archive"}</span>
-            </button>)}
-            {!note.trashed && (<div className="color-picker-container">
-                <button>
-                    <MdOutlinePalette className="toolbar-icon" />
-                    <span className="tool-name">Background</span>
+            {!note.archived && !note.trashed && (
+                <button className="toolbar-button" onClick={() => {
+                    updateNoteProperties({ pinned: note.pinned }, { pinned: !note.pinned });
+                    note.pinned = !note.pinned;
+                }}>
+                    {note.pinned ? <MdPushPin className="toolbar-icon" /> : <MdOutlinePushPin className="toolbar-icon" />}
+                    <span className="tool-name">{note.pinned ? "Unpin" : "Pin"}</span>
                 </button>
-                <div className="color-picker">
-                    <button className="color-option" style={{ background: "#f28b82" }} data-color="#f28b82"></button>
-                    <button className="color-option" style={{ background: "#fbbc04" }} data-color="#fbbc04"></button>
-                    <button className="color-option" style={{ background: "#fff475" }} data-color="#fff475"></button>
-                    <button className="color-option" style={{ background: "#ccff90" }} data-color="#ccff90"></button>
-                    <button className="color-option" style={{ background: "#a7ffeb" }} data-color="#a7ffeb"></button>
-                    <button className="color-option" style={{ background: "#d7aefb" }} data-color="#d7aefb"></button>
-                </div>
-            </div>)}
+            )}
 
-            <button onClick={() => {
+            {!note.trashed && (
+                <button className="toolbar-button" onClick={() => {
+                    updateNoteProperties({ archived: note.archived }, { archived: !note.archived });
+                    note.archived = !note.archived;
+                }}>
+                    {note.archived ? <MdOutlineUnarchive className="toolbar-icon" /> : <MdOutlineArchive className="toolbar-icon" />}
+                    <span className="tool-name">{note.archived ? "Unarchive" : "Archive"}</span>
+                </button>
+            )}
+            {!note.trashed && (
+                <div className="color-picker-container">
+                    <button className="toolbar-button" onClick={handlePicker}>
+                        <MdOutlinePalette className="toolbar-icon" />
+                        <span className="tool-name">Background</span>
+                    </button>
+                    <div className={`color-picker ${showColorPicker ? "color-picker-visible" : ""}`}>
+                        {colors.map(color =>
+                            <button
+                                key={color}
+                                className="color-option"
+                                style={{ background: color }}
+                                onClick={() => {
+                                    updateNoteProperties("", { color: color });
+                                    setBgColor(color);
+                                }}
+                            />
+                        )}
+                        <MdOutlineFormatColorReset
+                            className="color-option"
+                            style={{ background: "transparent", border: "1px solid" }}
+                            onClick={() => {
+                                updateNoteProperties("", { color: "#202124" });
+                                setBgColor("#202124");
+                            }}
+                        />
+
+                    </div>
+                </div>
+            )}
+
+            <button className="toolbar-button" onClick={() => {
                 updateNoteProperties({ trashed: note.trashed }, { trashed: !note.trashed });
                 note.trashed = !note.trashed;
             }}>
@@ -52,14 +78,17 @@ function Toolbar({ note, noteId, updateNoteProperties, deleteForever }) {
                 }
             </button>
 
-            {note.trashed && (<button onClick={() => {
-                deleteForever(note.id);
-            }}>
-                <MdDeleteForever className="toolbar-icon" />
-                <span className="tool-name">Delete forever</span>
-            </button>)}
+            {note.trashed && (
+                <button className="toolbar-button" onClick={() => {
+                    deleteForever(note.id);
+                }}>
+                    <MdDeleteForever className="toolbar-icon" />
+                    <span className="tool-name">Delete forever</span>
+                </button>
+            )}
         </div>
     );
-};
+}
+;
 
 export default Toolbar;
