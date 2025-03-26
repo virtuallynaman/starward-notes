@@ -151,7 +151,7 @@ app.get("/api/notes", async (req, res) => {
     const { noteType, sortOrder } = req.query;
     const user_id = req.user.id;
 
-    if (sortOrder != 'ASC' && sortOrder !== 'DESC') {
+    if (sortOrder !== 'ASC' && sortOrder !== 'DESC') {
         sortOrder = 'DESC';
     }
 
