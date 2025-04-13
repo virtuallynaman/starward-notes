@@ -79,7 +79,7 @@ function NavBar() {
         <div className="navbar" >
             <div className="menu-logo-container">
                 <MdMenu className="navbar-icon" onClick={() => setIsMenuOpen(!isMenuOpen)} />
-                <h2 className="logo">{noteType === "all" ? "HyperBloom" : (noteType === "archived" ? "Archive" : "Trash")}</h2>
+                <h2 className="logo">{noteType === "all" ? "Starward Notes" : (noteType === "archived" ? "Archive" : "Trash")}</h2>
                 <div className="search-bar">
                     <MdSearch className="search-icon" />
                     <input
@@ -95,7 +95,7 @@ function NavBar() {
             <div className={`sidebar ${isMenuOpen ? "open" : ""}`}>
                 <div className="sidebar-logo-container">
                     <MdMenu className="navbar-icon" onClick={() => setIsMenuOpen(!isMenuOpen)} />
-                    <h2 className="logo">{noteType === "all" ? "HyperBloom" : (noteType === "archived" ? "Archive" : "Trash")}</h2>
+                    <h2 className="logo">{noteType === "all" ? "Starward Notes" : (noteType === "archived" ? "Archive" : "Trash")}</h2>
                 </div>
 
                 <div className={`sidebar-item ${noteType === "all" && "active"}`}
@@ -110,7 +110,7 @@ function NavBar() {
                     onClick={() => handleNavigation("trashed")}>
                     {noteType === "trashed" ? <MdDelete className="sidebar-icon" /> : <MdDeleteOutline className="sidebar-icon" />}Trash
                 </div>
-                <a className="github-link" href="https://github.com/virtuallynaman/HyperBloom" target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} ><FaGithub className="sidebar-icon" /> Github Repo</a>
+                <a className="github-link" href="https://github.com/virtuallynaman/starward-notes" target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} ><FaGithub className="sidebar-icon" /> Github Repo</a>
             </div>
 
             {isMenuOpen && <div className="sidebar-overlay" onClick={() => setIsMenuOpen(false)}></div>}
