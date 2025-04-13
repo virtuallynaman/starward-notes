@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MdPushPin, MdOutlinePushPin, MdOutlineArchive, MdOutlineUnarchive, MdOutlinePalette, MdOutlineRestore, MdDeleteForever, MdDelete, MdOutlineFormatColorReset } from "react-icons/md";
 
 function Toolbar({ note, updateNoteProperties, deleteForever, setBgColor }) {
-    const colors = ["#2D2E30", "#3B3F52", "#4E4C67", "#5B5E7A", "#27374D", "#1E2A38", "#3D3B40", "#524A4E"];
+    const colors = ["#2D2E30", "#3B3F52", "#4E4C67", "#5B5E7A", "#27374D", "#1E2A38", "#3D3B40", "#524A4E", "#7c4a03", "#77172e", "#692b17", "#264d3b", "#0c625d", "#256377", "#284255", "#472e5b", "#6c394f", "#4b443a", "#232427"];
     const [showColorPicker, setShowColorPicker] = useState(false);
 
     const handlePicker = () => {
