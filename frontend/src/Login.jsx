@@ -48,7 +48,7 @@ function Login() {
         <div className="auth-page">
             <div className="bg-darken-overlay"></div>
             <div className="auth-container">
-                <h1 className="logo-header">HyperBloom</h1>
+                <h1 className="logo-header">Starward Notes</h1>
                 <form className="auth-form login-form" onSubmit={handleSubmit}>
                     <div className="auth-form-header">
                         <h1>Welcome Back</h1>

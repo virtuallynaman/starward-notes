@@ -172,7 +172,7 @@ app.get("/api/notes", async (req, res) => {
 
 // Get a specific note route
 app.get("/api/notes/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const user_id = req.user.id;
 
     if (isNaN(id)) {
@@ -206,7 +206,7 @@ app.post("/api/notes", async (req, res) => {
 
 // Update note content
 app.patch("/api/notes/:id/content", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { title, body } = req.body;
     const user_id = req.user.id;
 
@@ -230,7 +230,7 @@ app.patch("/api/notes/:id/content", async (req, res) => {
 
 // Update note properties 
 app.patch("/api/notes/:id/properties", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const { pinned, archived, color, trashed } = req.body;
     const user_id = req.user.id;
 
@@ -250,7 +250,7 @@ app.patch("/api/notes/:id/properties", async (req, res) => {
 
 // Delete a note
 app.delete("/api/notes/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const user_id = req.user.id;
 
     if (isNaN(id)) {
