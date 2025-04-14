@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 
 // Middlewares
 app.use(cors({
-    origin: [process.env.CLIENT_URL],
+    origin: [process.env.CLIENT_URL, 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 }));
 
@@ -175,7 +175,7 @@ app.get("/api/notes/:id", async (req, res) => {
     const id = req.params.id;
     const user_id = req.user.id;
 
-    if (isNaN(id)) {
+    if (!validator.isUUID(id)) {
         return res.status(400).json({ message: "Invalid note ID" });
     }
     try {
@@ -210,7 +210,7 @@ app.patch("/api/notes/:id/content", async (req, res) => {
     const { title, body } = req.body;
     const user_id = req.user.id;
 
-    if (isNaN(id)) {
+    if (!validator.isUUID(id)) {
         return res.status(400).json({ message: "Invalid note ID" });
     }
 
@@ -253,7 +253,7 @@ app.delete("/api/notes/:id", async (req, res) => {
     const id = req.params.id;
     const user_id = req.user.id;
 
-    if (isNaN(id)) {
+    if (!validator.isUUID(id)) {
         return res.status(400).json({ message: "Invalid note ID" });
     }
 
