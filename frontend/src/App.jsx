@@ -13,16 +13,20 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={user ? <NotesProvider><HomePage /></NotesProvider> : <Navigate to={"/login"} />}
+          element={user ? <NotesProvider><HomePage /></NotesProvider> : <Navigate to="/login" />}
         />
         <Route
           path="/signup"
           exact
-          element={!user ? <SignUp /> : <Navigate to={"/"} />}
+          element={!user ? <SignUp /> : <Navigate to="/" />}
         />
         <Route
           path="/login"
-          element={!user ? <Login /> : <Navigate to={"/"} />}
+          element={!user ? <Login /> : <Navigate to="/" />}
+        />
+        <Route
+          path="*"
+          element={<Navigate to="/" />}
         />
       </Routes>
     </BrowserRouter>
