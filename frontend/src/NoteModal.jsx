@@ -60,10 +60,6 @@ function NoteModal({ isOpen, onClose, note, isAutoSave }) {
             const newNote = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/notes`, { title, body }, { headers: { 'Authorization': `Bearer ${user.accessToken}` } });
             setNotes(prevNotes => [newNote.data, ...prevNotes]);
             setNoteId(newNote.data.id);
-            console.log("Note posted:", newNote);
-            console.log("new note:", newNote);
-            console.log("new note id:", newNote.data.id);
-            console.log("note id:", noteId);
         } catch (err) {
             console.error("Error creating a new note:", err);
             toast.error(`${err.message || "Something went wrong."}`);
@@ -95,7 +91,6 @@ function NoteModal({ isOpen, onClose, note, isAutoSave }) {
         }
         try {
             await axios.patch(`${import.meta.env.VITE_BASE_URL}/api/notes/${noteId}/properties`, { ...updatedProperty }, { headers: { "Authorization": `Bearer ${user.accessToken}` } });
-            console.log("updating property:", updatedProperty);
             setNotes(prevNotes =>
                 prevNotes
                     .map(note => note.id === noteId ? { ...note, ...updatedProperty } : note)
@@ -125,7 +120,6 @@ function NoteModal({ isOpen, onClose, note, isAutoSave }) {
         try {
             await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/notes/${noteId}`, { headers: { "Authorization": `Bearer ${user.accessToken}` } });
             onClose();
-            console.log("deleted forever");
             setNotes(prevNotes =>
                 prevNotes.filter(note => note.id !== noteId)
             );
