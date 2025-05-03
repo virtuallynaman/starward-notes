@@ -137,8 +137,8 @@ function SignUp() {
 
                     {error && <div className="auth-error">{error}</div>}
 
-                    <div className="divider">OR</div>
-                    <div className="google-auth"><FaGoogle /> Google</div>
+                    {/* <div className="divider">OR</div>
+                    <div className="google-auth"><FaGoogle /> Google</div> */}
                     <div className="auth-hint">
                         <p>Already have an account?</p>
                         <Link to={"/login"}>Log in</Link>
