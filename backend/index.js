@@ -6,13 +6,15 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import requireAuth from "./middleware/requireAuth.js";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Middlewares
 app.use(cors({
-    origin: [process.env.CLIENT_URL],
+    origin: ['http://localhost:5173', 'https://accounts.google.com'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 }));
 
@@ -37,6 +39,38 @@ async function createUser(name, email, hashedPassword) {
     const result = await db.query("INSERT INTO users(name, email, password) VALUES($1, $2, $3) RETURNING *;", [name, email, hashedPassword]);
     return result.rows[0];
 }
+
+// Google Oauth
+passport.use(
+    new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: "/auth/google/callback"
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                let user = await db.query("SELECT * FROM users WHERE google_id = $1;", [profile.id]);
+
+                if (user.rows.length === 0) {
+                    const oauthUser = await db.query("INSERT INTO users(name, email, google_id, profile_picture) VALUES($1, $2, $3, $4) RETURNING *;", [profile.displayName, profile.emails[0].value, profile.id, profile.photos[0].value])
+                    user = oauthUser;
+                }
+                console.log("user", user);
+                const token = jwt.sign(
+                    { id: user.rows[0].id, email: user.rows[0].email },
+                    process.env.SECRET_KEY,
+                    { expiresIn: '7d' }
+                );
+                console.log("token", token)
+
+                return done(null, { user: user.rows[0], token });
+            } catch (err) {
+                return done(err, null);
+            }
+        }
+    )
+)
 
 // Signup route 
 app.post("/auth/signup", async (req, res) => {
@@ -68,7 +102,7 @@ app.post("/auth/signup", async (req, res) => {
         const accessToken = jwt.sign(
             { id: user.id, email: user.email },
             process.env.SECRET_KEY,
-            { expiresIn: '3d' }
+            { expiresIn: '7d' }
         );
 
         res.status(201).json({ error: false, message: "Registered successfully.", email, accessToken });
@@ -107,7 +141,7 @@ app.post("/auth/login", async (req, res) => {
         const accessToken = jwt.sign(
             { id: user.id, email: user.email },
             process.env.SECRET_KEY,
-            { expiresIn: '3d' }
+            { expiresIn: '7d' }
         );
 
         return res.status(200).json({ error: false, message: "Logged in successfully", email, accessToken });
@@ -115,6 +149,20 @@ app.post("/auth/login", async (req, res) => {
         console.error("Error logging in", err);
         res.status(500).json({ error: true, message: "Internal Server Error." });
     }
+})
+
+app.get("/auth/google", passport.authenticate("google", {
+    scope: ["profile", "email"]
+}));
+
+app.get("/auth/google/callback", passport.authenticate("google", {
+    session: false,
+    failureRedirect: "http://localhost:5173/"
+}), (req, res) => {
+    console.log(req.user);
+    const { user, token } = req.user;
+    res.status(201).json({ error: false, message: "Registered successfully.", email: user.email, accessToken: token });
+    res.redirect("http://localhost:5173/login/");
 })
 
 // Auth middleware

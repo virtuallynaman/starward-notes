@@ -90,7 +90,10 @@ function Login() {
                     {error && <div className="auth-error">{error}</div>}
 
                     <div className="divider">OR</div>
-                    <div className="google-auth"><FaGoogle />Google</div>
+                    <a
+                        href="http://localhost:3000/auth/google"
+                        className="google-auth"><FaGoogle />Google
+                    </a>
                     <div className="auth-hint">
                         <p>Don't have an account?</p>
                         <Link to={"/signup"}>Sign up</Link>
