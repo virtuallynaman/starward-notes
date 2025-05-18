@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 function NavBar() {
     const { logout } = useAuth();
-    const { viewStyle, setViewStyle, sortOrder, setSortOrder, searchTerm, setSearchTerm, noteType, setNoteType, setNotes, noInternet, setWarnNoInternet } = useNotes();
+    const { viewStyle, setViewStyle, sortOrder, setSortOrder, searchTerm, setSearchTerm, noteType, setNoteType, setNotes } = useNotes();
     const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     const sortDropdownRef = useRef(null);
     const profileDropdownRef = useRef(null);
@@ -132,7 +132,7 @@ function NavBar() {
                     <p className="navbar-text">{viewStyle === "grid-view" ? "List View" : "Grid View"}</p>
                 </div>
                 <div className="navbar-options" ref={profileDropdownRef} onClick={toggleProfileDropdown}>
-                    <img className="profile-pic" src="https://picsum.photos/200/200" alt="profile-pic" />
+                    <img className="profile-pic" src="https://picsum.photos/id/10/200/200" alt="profile-pic" />
                     {isProfileDropdownOpen && (
                         <div className="profile-dropdown">
                             <span className="tooltip"></span>

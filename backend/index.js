@@ -1,3 +1,4 @@
+// Import npm packages
 import express from "express";
 import pg from "pg";
 import cors from "cors";
@@ -17,6 +18,7 @@ app.use(cors({
 }));
 
 app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 
 // Database setup
@@ -30,7 +32,6 @@ const db = new pg.Client({
 db.connect()
     .then(console.log("Connected to the database"))
     .catch((err) => console.error("Database connection error", err));
-
 
 // Create a new user
 async function createUser(name, email, hashedPassword) {
@@ -68,7 +69,7 @@ app.post("/auth/signup", async (req, res) => {
         const accessToken = jwt.sign(
             { id: user.id, email: user.email },
             process.env.SECRET_KEY,
-            { expiresIn: '3d' }
+            { expiresIn: '7d' }
         );
 
         res.status(201).json({ error: false, message: "Registered successfully.", email, accessToken });
@@ -107,7 +108,7 @@ app.post("/auth/login", async (req, res) => {
         const accessToken = jwt.sign(
             { id: user.id, email: user.email },
             process.env.SECRET_KEY,
-            { expiresIn: '3d' }
+            { expiresIn: '7d' }
         );
 
         return res.status(200).json({ error: false, message: "Logged in successfully", email, accessToken });
