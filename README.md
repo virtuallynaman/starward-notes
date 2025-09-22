@@ -63,7 +63,7 @@ The frontend will run at http://localhost:5173 and the backend at http://localho
 
 ## 🙌 Credits
 
-Background from [StockSnap](https://www.stocksnap.io/) — used under free-to-use license (exact authors unknown, will update soon)
+Background from [StockSnap](https://www.stocksnap.io/) - used under free-to-use license (author unknown; to be updated)
 
 ## 📄 License
 MIT
