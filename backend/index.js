@@ -9,11 +9,22 @@ import jwt from "jsonwebtoken"
 import requireAuth from "./middleware/requireAuth.js";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
+const allowedOrigins = [
+    process.env.CLIENT_URL, // production frontend
+    'http://localhost:5173' // localhost frontend
+]
 
 // Middlewares
 app.use(cors({
-    origin: [process.env.CLIENT_URL],
+    origin: (origin, callback)=>{
+        // postman's no origin requests are allowed too (!origin)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
 }));
 

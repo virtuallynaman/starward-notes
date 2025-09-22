@@ -652,12 +652,6 @@ button {
     opacity: 1;
 }
 
-/* Show color picker on palette button click */
-/* .color-picker-container:focus-within .color-picker {
-    visibility: visible;
-    opacity: 1;
-} */
-
 /* Signup/Login Page */
 .auth-page {
     background: url("/StockSnap_MY9TVNEESX.webp") no-repeat;
@@ -680,7 +674,7 @@ button {
 
 .logo-header {
     text-align: center;
-    padding: 50px 0 0;
+    padding: 100px 0 0;
     font-size: 48px;
     color: white;
 }
@@ -699,7 +693,7 @@ button {
 
 .auth-form.signup-form {
     margin-top: 25px;
-    padding: 20px 0 10px;
+    padding: 30px 0 20px;
 }
 
 .auth-form.login-form {
@@ -783,7 +777,6 @@ button {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    /* background-color: #009cff; */
     background: none;
     border: 1px solid #f2f2f2;
     outline: none;
@@ -804,7 +797,7 @@ button {
 .auth-hint {
     display: flex;
     gap: 5px;
-    margin: 5px 0 10px;
+    margin: 10px 0;
 }
 
 .auth-error {
