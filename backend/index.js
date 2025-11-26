@@ -17,7 +17,7 @@ const allowedOrigins = [
 
 // Middlewares
 app.use(cors({
-    origin: (origin, callback)=>{
+    origin: (origin, callback) => {
         // postman's no origin requests are allowed too (!origin)
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
@@ -83,7 +83,7 @@ app.post("/auth/signup", async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        res.status(201).json({ error: false, message: "Registered successfully.", email, accessToken });
+        res.status(201).json({ error: false, message: "Registered successfully.", email: user.email, accessToken, name: user.name });
     } catch (err) {
         console.error("Error signing up", err);
         res.status(500).json({ error: true, message: "Internal Server Error" });
@@ -122,7 +122,7 @@ app.post("/auth/login", async (req, res) => {
             { expiresIn: '7d' }
         );
 
-        return res.status(200).json({ error: false, message: "Logged in successfully", email, accessToken });
+        return res.status(200).json({ error: false, message: "Logged in successfully", email: user.email, accessToken, name: user.name });
     } catch (err) {
         console.error("Error logging in", err);
         res.status(500).json({ error: true, message: "Internal Server Error." });
