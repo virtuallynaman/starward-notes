@@ -1,11 +1,11 @@
-import { MdMenu, MdRefresh, MdSearch, MdClose, MdGridView, MdOutlineViewAgenda, MdSort, MdDeleteOutline, MdOutlineArchive, MdOutlineHome, MdHome, MdArchive, MdDelete, MdLogout } from "react-icons/md";
+import { MdMenu, MdSearch, MdClose, MdGridView, MdOutlineViewAgenda, MdSort, MdDeleteOutline, MdOutlineArchive, MdOutlineHome, MdHome, MdArchive, MdDelete, MdLogout, MdPerson } from "react-icons/md";
 import { FaGithub } from "react-icons/fa"
 import { useNotes } from "./NotesProvider";
 import { useAuth } from "./AuthProvider";
 import { useEffect, useRef, useState } from "react";
 
 function NavBar() {
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
     const { viewStyle, setViewStyle, sortOrder, setSortOrder, searchTerm, setSearchTerm, noteType, setNoteType, setNotes } = useNotes();
     const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     const sortDropdownRef = useRef(null);
@@ -133,10 +133,16 @@ function NavBar() {
                 </div>
                 <div className="navbar-options" ref={profileDropdownRef} onClick={toggleProfileDropdown}>
                     <img className="profile-pic" src="https://picsum.photos/id/10/200/200" alt="profile-pic" />
+                    <p className="tool-name">▾</p>
+
                     {isProfileDropdownOpen && (
                         <div className="profile-dropdown">
                             <span className="tooltip"></span>
-                            <div className="profile-dropdown-item" onClick={() => logout()}>
+                            <div className="profile-dropdown-item">
+                                <MdPerson className="navbar-icon" />
+                                <span>{user ? user.name : "Username"}</span>
+                            </div>
+                            <div className="profile-dropdown-item logout" onClick={() => logout()}>
                                 <MdLogout className="navbar-icon" />
                                 <span>Log out</span>
                             </div>

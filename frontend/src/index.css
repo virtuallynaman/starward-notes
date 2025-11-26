@@ -245,7 +245,7 @@ button {
     border-radius: 5px;
 }
 
-.profile-dropdown-item:hover {
+.profile-dropdown-item.logout:hover {
     background-color: #75757648;
 }
 
@@ -592,7 +592,7 @@ button {
     font-size: 20px;
 }
 
-.toolbar .tool-name {
+.tool-name {
     margin-left: 5px;
     font-size: 16px;
     background: none;
@@ -647,7 +647,7 @@ button {
     transform: scale(1.1);
 }
 
-.color-picker.color-picker-visible  {
+.color-picker.color-picker-visible {
     visibility: visible;
     opacity: 1;
 }
