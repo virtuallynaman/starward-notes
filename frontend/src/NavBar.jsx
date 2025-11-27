@@ -134,6 +134,7 @@ function NavBar() {
                 <div className="navbar-options" ref={profileDropdownRef} onClick={toggleProfileDropdown}>
                     <div className={`profile-wrapper ${isProfileDropdownOpen ? "active" : ""}`}>
                         <img className="profile-pic" src="https://picsum.photos/id/10/200/200" alt="profile-pic" />
+                        {!isProfileDropdownOpen && (<div className="profile-tooltip">{user ? user.name : "Username"}</div>)}
                     </div>
                     {isProfileDropdownOpen && (
                         <div className="profile-dropdown">
