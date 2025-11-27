@@ -132,12 +132,11 @@ function NavBar() {
                     <p className="navbar-text">{viewStyle === "grid-view" ? "List View" : "Grid View"}</p>
                 </div>
                 <div className="navbar-options" ref={profileDropdownRef} onClick={toggleProfileDropdown}>
-                    <img className="profile-pic" src="https://picsum.photos/id/10/200/200" alt="profile-pic" />
-                    <p className="tool-name">▾</p>
-
+                    <div className={`profile-wrapper ${isProfileDropdownOpen ? "active" : ""}`}>
+                        <img className="profile-pic" src="https://picsum.photos/id/10/200/200" alt="profile-pic" />
+                    </div>
                     {isProfileDropdownOpen && (
                         <div className="profile-dropdown">
-                            <span className="tooltip"></span>
                             <div className="profile-dropdown-item">
                                 <MdPerson className="navbar-icon" />
                                 <span>{user ? user.name : "Username"}</span>
